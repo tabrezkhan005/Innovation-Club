@@ -1,19 +1,33 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
+import type { NextFetchEvent, NextRequest } from "next/server"
+import { NextResponse } from "next/server"
 
 const isProtectedRoute = createRouteMatcher(["/dashboard(.*)", "/profile(.*)"])
 const isAdminRoute = createRouteMatcher(["/admin(.*)"])
 
-export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req) || isAdminRoute(req)) await auth.protect()
+function isClerkConfigured() {
+  return Boolean(
+    process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.trim() &&
+      process.env.CLERK_SECRET_KEY?.trim(),
+  )
+}
 
-  if (!isAdminRoute(req)) return
+const clerkAuth = clerkMiddleware(async (auth, req) => {
+  if (isAdminRoute(req)) {
+    await auth.protect()
+    const { sessionClaims } = await auth()
+    const role = (sessionClaims?.metadata as { role?: string } | undefined)?.role
+    if (role !== "admin") return NextResponse.redirect(new URL("/", req.url))
+    return
+  }
 
-  const { sessionClaims } = await auth()
-  const metadata = sessionClaims?.metadata as { role?: string } | undefined
-  const role = metadata?.role
-
-  if (role !== "admin") await auth.protect()
+  if (isProtectedRoute(req)) await auth.protect()
 })
+
+export default function middleware(req: NextRequest, event: NextFetchEvent) {
+  if (!isClerkConfigured()) return NextResponse.next()
+  return clerkAuth(req, event)
+}
 
 export const config = {
   matcher: [
