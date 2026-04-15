@@ -1,0 +1,156 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+
+  /* Deep dark canvas — gold is accent only, not the dominant read color */
+  --bg-base: #0a0908;
+  --bg-surface: #121110;
+  --bg-elevated: #181716;
+  --bg-subtle: #201f1c;
+
+  /* Gold / amber — buttons, hovers, key highlights, focus */
+  --accent-primary: #c89b2a;
+  --accent-bright: #e8c45a;
+  --accent-deep: #7a5c10;
+  --accent-glow: rgba(200, 155, 42, 0.22);
+
+  /* White-forward typography */
+  --accent-white: #ffffff;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.72);
+  --text-tertiary: rgba(255, 255, 255, 0.45);
+
+  /* Borders: default = neutral (white ink); accent = gold for emphasis */
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-accent: rgba(200, 155, 42, 0.45);
+
+  --gradient-hero: linear-gradient(135deg, #0a0908 0%, #0f0e0c 50%, #080706 100%);
+  --gradient-accent: linear-gradient(135deg, #c89b2a, #f0d060);
+}
+
+@theme inline {
+  --color-bg-base: var(--bg-base);
+  --color-bg-surface: var(--bg-surface);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-accent-primary: var(--accent-primary);
+  --color-accent-bright: var(--accent-bright);
+  --color-accent-white: var(--accent-white);
+  --color-accent-deep: var(--accent-deep);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-border-default: var(--border-default);
+  --color-border-accent: var(--border-accent);
+  --font-display: var(--font-syne);
+  --font-heading: var(--font-plus-jakarta-sans);
+  --font-ui: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-inter), sans-serif;
+}
+
+a,
+button {
+  transition: all 200ms ease;
+}
+
+.gold-focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg-base;
+}
+
+.headline-accent {
+  color: var(--accent-bright);
+  border-bottom: 3px solid var(--accent-primary);
+}
+
+.club-logo-hover:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 8px rgba(200, 155, 42, 0.5));
+}
+
+@keyframes gold-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(200, 155, 42, 0.6);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(200, 155, 42, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(200, 155, 42, 0);
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* Home: single static canvas + cinematic framing */
+.page-home {
+  background-color: var(--bg-base);
+}
+
+.page-home__vignette {
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 85% 70% at 50% 38%,
+    rgba(200, 155, 42, 0.05) 0%,
+    transparent 55%
+  );
+}
+
+.page-home__letterbox {
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.45) 0,
+    transparent 72px,
+    transparent calc(100% - 72px),
+    rgba(0, 0, 0, 0.45) 100%
+  );
+}
+
+@keyframes scroll-hint-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+.scroll-hint {
+  animation: scroll-hint-bounce 2.2s ease-in-out infinite;
+}
+
+@keyframes fade-word {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-word {
+  animation: fade-word 0.6s ease-out;
+}
